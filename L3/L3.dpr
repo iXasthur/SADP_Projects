@@ -9,7 +9,7 @@ uses
 
 const
   hashListSize = 500;
-  mainFileName = 'Angelina.txt';
+  mainFileName = 'Input.txt';
   stdStrSize = 100;
   detailedOutput = false;
 
