@@ -19,6 +19,7 @@ type
 
   pagesListElementPointer = ^pagesListElement;
   pagesListElement = Record
+    name: String;
     value: Array of Integer;
     nextElement: pagesListElementPointer;
   End;
@@ -78,6 +79,43 @@ begin
 end;
 
 
+function getPagesByName(const head: pagesListElementPointer; const name: String): String;
+var
+  buffStr: String;
+  element: pagesListElementPointer;
+  i: Integer;
+begin
+  element := head;
+  buffStr := '';
+
+  while element<>nil do
+  begin
+    if element.name = name then
+    begin
+      for i := 0 to Length(element.value)-1 do
+      begin
+        buffStr:= buffStr + ' ' + IntToStr(element.value[i]);
+      end;
+
+      element := nil;
+    end;
+
+    if element <> nil then
+    begin
+      element := element.nextElement;
+    end;
+  end;
+
+  if buffStr <> '' then
+  begin
+    insert('(',buffStr,2);
+    buffStr := buffStr + ')';
+  end;
+
+  getPagesByName := buffStr;
+end;
+
+
 procedure createFile(name: String);
 var
   F: File of fileElementString;
@@ -89,70 +127,206 @@ begin
   write(f,str);
   str := generateKeyV('_(FRANCE)%(1)');
   write(f,str);
-  str := generateKeyV('__(PARIS)%(1)');
+  str := generateKeyV('__(PARIS)%(3)');
   write(f,str);
-  str := generateKeyV('__(LYON)%(1)');
+  str := generateKeyV('__(LYON)%(4)');
   write(f,str);
-  str := generateKeyV('__(CAEN)%(1)');
+  str := generateKeyV('__(CAEN)%(5)');
   write(f,str);
-  str := generateKeyV('_(GERMANY)%(1)');
+  str := generateKeyV('_(GERMANY)%(10)');
   write(f,str);
-  str := generateKeyV('__(BERLIN)%(1)');
+  str := generateKeyV('__(BERLIN)%(11)');
   write(f,str);
-  str := generateKeyV('__(FRANKFURT)%(1)');
+  str := generateKeyV('__(FRANKFURT)%(12)');
   write(f,str);
-  str := generateKeyV('__(MUNICH)%(1)');
+  str := generateKeyV('__(MUNICH)%(13)');
   write(f,str);
-  str := generateKeyV('_(UK)%(1)');
+  str := generateKeyV('_(UK)%(50)');
   write(f,str);
-  str := generateKeyV('__(LONDON)%(1)');
+  str := generateKeyV('__(LONDON)%(50)');
   write(f,str);
-  str := generateKeyV('__(YORK)%(1)');
+  str := generateKeyV('__(YORK)%(51)');
   write(f,str);
-  str := generateKeyV('__(NORWICH)%(1)');
+  str := generateKeyV('__(NORWICH)%(52)');
   write(f,str);
-  str := generateKeyV('__(BATH)%(1)');
+  str := generateKeyV('__(BATH)%(53)');
   write(f,str);
-  str := generateKeyV('(NORTH AMERICA)%(1)');
+  str := generateKeyV('__(MINSK)%(105)');
   write(f,str);
-  str := generateKeyV('_(USA)%(1)');
+  str := generateKeyV('(NORTH AMERICA)%(100)');
   write(f,str);
-  str := generateKeyV('__(NEW-YORK)%(1)');
+  str := generateKeyV('_(USA)%(100)');
   write(f,str);
-  str := generateKeyV('__(SAN-FRANCISCO)%(1)');
+  str := generateKeyV('__(NEW-YORK)%(101)');
   write(f,str);
-  str := generateKeyV('__(LOS-ANGELES)%(1)');
+  str := generateKeyV('__(SAN-FRANCISCO)%(102)');
   write(f,str);
-  str := generateKeyV('__(CHICAGO)%(1)');
+  str := generateKeyV('__(LOS-ANGELES)%(103)');
   write(f,str);
-  str := generateKeyV('__(MINSK)%(1)');
+  str := generateKeyV('__(CHICAGO)%(104)');
   write(f,str);
-  str := generateKeyV('__(PITTSBURG)%(1)');
+  str := generateKeyV('__(MINSK)%(105)');
   write(f,str);
-  str := generateKeyV('_(CANADA)%(1)');
+  str := generateKeyV('__(PITTSBURG)%(106)');
   write(f,str);
-  str := generateKeyV('__(TORONTO)%(1)');
+  str := generateKeyV('_(CANADA)%(110)');
   write(f,str);
-  str := generateKeyV('__(OTTAWA)%(1)');
+  str := generateKeyV('__(TORONTO)%(111)');
   write(f,str);
-  str := generateKeyV('__(MONTREAL)%(1)');
+  str := generateKeyV('__(OTTAWA)%(112)');
   write(f,str);
-  str := generateKeyV('_(MEXICO)%(1)');
+  str := generateKeyV('__(MONTREAL)%(113)');
   write(f,str);
-  str := generateKeyV('__(MEXICO CITY)%(1)');
+  str := generateKeyV('_(MEXICO)%(120)');
   write(f,str);
-  str := generateKeyV('__(CANCUN)%(1)');
+  str := generateKeyV('__(MEXICO CITY)%(121)');
+  write(f,str);
+  str := generateKeyV('__(CANCUN)%(122)');
+  write(f,str);
+  str := generateKeyV('(ABC)%(500)');
+  write(f,str);
+  str := generateKeyV('_(D)%(504)');
+  write(f,str);
+  str := generateKeyV('_(A)%(501)');
+  write(f,str);
+  str := generateKeyV('__(B)%(502)');
+  write(f,str);
+  str := generateKeyV('___(C)%(503)');
   write(f,str);
   close(f);
 end;
 
+procedure addPageElement(var head: pagesListElementPointer; var element: pagesListElementPointer);
+var
+  el: pagesListElementPointer;
+  i,q:Integer;
+  foundPage, addedPages:Boolean;
+begin
+  el := head;
+  addedPages := false;
+  while el<>nil do
+  begin
+    if el.name = element.name then
+    begin
+      for i := 0 to Length(element.value)-1 do
+      begin
+        foundPage := false;
+        for q := 0 to Length(el.value)-1 do
+        begin
+          if el.value[q] = element.value[i] then
+          begin
+            foundPage := true;
+          end;
+
+          if not(foundPage) then
+          begin
+            SetLength(el.value,Length(el.value)+1);
+            el.value[Length(el.value)-1] := element.value[i];
+          end;
+
+          addedPages := true;
+        end;
+      end;
+
+      el := nil;
+    end;
+
+    if el<>nil then
+    begin
+      el := el.nextElement;
+    end;
+  end;
+
+  if not(addedPages) then
+  begin
+    el := head;
+
+    while el.nextElement<>nil do
+    begin
+      el := el.nextElement;
+    end;
+
+
+    new(el.nextElement);
+    el := el.nextElement;
+    el.name := element.name;
+    el.nextElement := nil;
+
+    SetLength(el.value,Length(element.value));
+    for i := 0 to Length(el.value)-1 do
+    begin
+      el.value[i] := element.value[i];
+    end;
+  end;
+end;
+
 procedure extractPages(var arr: fileStringsArray; var head: pagesListElementPointer);
 var
-  i,p: Integer;
+  i,p,p1,p2,count,q: Integer;
+  element: pagesListElementPointer;
+  buffStr,buffName,buffNum: String;
+  buffArr: Array of Integer;
 begin
+  if head = nil then
+  begin
+    new(head);
+    head.name := '';
+    head.nextElement := nil;
+  end;
+
+
   for i := 0 to Length(arr) do
   begin
+    p1 := pos('(',arr[i]) + 1;
+    p2 := pos(')',arr[i]);
+    buffName := '';
+    buffName := copy(arr[i],p1,p2-p1);
+//    writeln(buffName);
+
     p := pos('%',arr[i]);
+    buffStr := copy(arr[i],pos('(',arr[i],p),pos(')',arr[i],pos('(',arr[i],p)));
+    if buffStr <> '()' then
+    begin
+      element := nil;
+
+      buffNum := '';
+      count := 0;
+      SetLength(buffArr,0);
+      while length(buffStr) > 0 do
+      begin
+        if (buffStr[1]>='0') and (buffStr[1]<='9') then
+        begin
+          buffNum := buffNum + buffStr[1];
+          delete(buffStr,1,1);
+        end else
+            begin
+              if buffNum <> '' then
+              begin
+//                writeln(buffNum);
+                count := count + 1;
+                SetLength(buffArr,count);
+                buffArr[count-1] := StrToInt(buffNum);
+                buffNum := '';
+              end;
+              delete(buffStr,1,1);
+            end;
+      end;
+
+      if count>0 then
+      begin
+        new(element);
+        element.name := buffName;
+        SetLength(element.value,Length(buffArr));
+        for q := 0 to Length(element.value)-1 do
+        begin
+          element.value[q] := buffArr[q];
+        end;
+        addPageElement(head,element);
+//        dispose(element);
+      end;
+//      writeln(' ',count);
+    end;
+
     Delete(arr[i],p,pos(')',arr[i],p)-p+1);
   end;
 end;
@@ -224,7 +398,7 @@ begin
 
 end;
 
-procedure updateValue(forKey: String; strValue: String ;var listHeadPointer: hashListElementPointer);
+procedure updateValue(forKey: String; strValue: String ;var listHeadPointer: hashListElementPointer; pageListHead: pagesListElementPointer);
 var
   hash,i: Integer;
   element: hashListElementPointer;
@@ -283,80 +457,91 @@ begin
                   end;
             end;
       end;
-
+  element.pages := pageListHead;
 end;
 
-procedure outputHashListElement(element: hashListElementPointer);
+procedure outputHashListElement(element: hashListElementPointer; var buffString: String);
 begin
   if detailedOutput then
   begin
-    write(': [KEY: ''',element.key);
-    write(''' VALUE: ''',element.value);
+//    write(': [KEY: ''',element.key);
+    buffString := buffString + ': [KEY: ''' + element.key;
+//    write(''' VALUE: ''',element.value);
+    buffString := buffString + ''' VALUE: ''' + element.value;
     if element.pages <> nil then
     begin
-      write(''' PAGES: TRUE');
+//      write(''' PAGES: TRUE');
+      buffString := buffString + ''' PAGES: TRUE';
     end else
         begin
-          write(''' PAGES: FALSE');
+//          write(''' PAGES: FALSE');
+          buffString := buffString + ''' PAGES: FALSE';
         end;
 
     if element.internalList <> nil then
     begin
-      writeln(' INTERNAL LIST: TRUE]');
+//      writeln(' INTERNAL LIST: TRUE]');
+      buffString := buffString + ' INTERNAL LIST: TRUE]' + #13 + #10;
     end else
         begin
-          writeln(' INTERNAL LIST: FALSE]');
+//          writeln(' INTERNAL LIST: FALSE]');
+          buffString := buffString + ' INTERNAL LIST: FALSE]' + #13 + #10;
         end;
   end else
       begin
-        writeln(element.value);
+//        writeln(element.value);
+        buffString := buffString + element.value + getPagesByName(element.pages,element.value) + #13 + #10;
       end;
 end;
 
-procedure outputHashList(outputAdditionalString: String; listHeadPointer: hashListElementPointer);
-var
-  i: Integer;
-  element,additionalElement: hashListElementPointer;
-begin
-  element := listHeadPointer;
-  i := 0;
-  while element <> nil do
-  begin
-    if element.key <> '' then
-    begin
-      write(outputAdditionalString);
-      if detailedOutput then
-      begin
-        write(i:3);
-      end;
-      outputHashListElement(element);
-      if element.internalList <> nil then
-      begin
-        outputHashList(outputAdditionalString+'    ',element.internalList);
-      end;
-      additionalElement := element;
-      if additionalElement.additionalListElement <> nil then
-      begin
-        additionalElement := additionalElement.additionalListElement;
-        while additionalElement <> nil do
-        begin
-          write(outputAdditionalString);
-          write('  ');
-          outputHashListElement(additionalElement);
-          if additionalElement.internalList <> nil then
-          begin
-            outputHashList(outputAdditionalString+'    ',additionalElement.internalList);
-          end;
-          additionalElement := additionalElement.additionalListElement;
-        end;
-      end;
-      
-      
-    end;
-    i := i + 1;
-    element := element.nextElement;
-  end;
-end;
+//procedure outputHashList(outputAdditionalString: String; listHeadPointer: hashListElementPointer; var buffString: String);
+//var
+//  i: Integer;
+//  element,additionalElement: hashListElementPointer;
+//begin
+//  element := listHeadPointer;
+//  i := 0;
+//  while element <> nil do
+//  begin
+//    if (element.key <> '') and (element.value <> '') then
+//    begin
+////      write(outputAdditionalString);
+//      buffString := buffString + outputAdditionalString;
+//      if detailedOutput then
+//      begin
+////        write(i:3);
+//        buffString := buffString + IntToStr(i);
+//      end;
+//      outputHashListElement(element,buffString);
+//      if element.internalList <> nil then
+//      begin
+//        outputHashList(outputAdditionalString+'    ',element.internalList,buffString);
+//      end;
+//      additionalElement := element;
+//      if additionalElement.additionalListElement <> nil then
+//      begin
+//        additionalElement := additionalElement.additionalListElement;
+//        while additionalElement <> nil do
+//        begin
+////          write(outputAdditionalString);
+//          buffString := buffString + outputAdditionalString;
+////          write('  ');
+//          buffString := buffString + '  ';
+//          outputHashListElement(additionalElement,buffString);
+//          if additionalElement.internalList <> nil then
+//          begin
+//            outputHashList(outputAdditionalString+'    ',additionalElement.internalList,buffString);
+//          end;
+//          additionalElement := additionalElement.additionalListElement;
+//        end;
+//      end;
+//
+//
+//    end;
+//    i := i + 1;
+//    element := element.nextElement;
+//  end;
+//end;
 
 function getElementPointerByKey(head: hashListElementPointer; key: String): hashListElementPointer;
 var
@@ -386,7 +571,7 @@ begin
       end;
 end;
 
-procedure fillHashInternalLists(head: hashListElementPointer; arr: fileStringsArray; k: Integer);
+procedure fillHashInternalLists(head: hashListElementPointer; arr: fileStringsArray; k: Integer; pageListHead: pagesListElementPointer);
 var
   i,p1,p2,count: Integer;
   buffVal: fileElementString;
@@ -408,7 +593,7 @@ begin
       p2 := pos(')',arr[i]);
       buffVal := '';
       buffVal := copy(arr[i],p1,p2-p1);
-      updateValue(buffVal,buffVal,head);
+      updateValue(buffVal,buffVal,head,pageListHead);
     end;
   end;
 
@@ -437,12 +622,12 @@ begin
 
       internalPointer := getElementPointerByKey(head,buffKey);
       createHashList(internalPointer.internalList);
-      fillHashInternalLists(internalPointer.internalList,buffArr,k+1);
+      fillHashInternalLists(internalPointer.internalList,buffArr,k+1,pageListHead);
     end;
   end;
 end;
 
-procedure fillHashList(head: hashListElementPointer; arr: fileStringsArray);
+procedure fillHashList(head: hashListElementPointer; arr: fileStringsArray; pageListHead: pagesListElementPointer);
 var
   buffArr: fileStringsArray;
   count,i,p1,p2: Integer;
@@ -457,7 +642,7 @@ begin
       p2 := pos(')',arr[i]);
       buffVal := '';
       buffVal := copy(arr[i],p1,p2-p1);
-      updateValue(buffVal,buffVal,head);
+      updateValue(buffVal,buffVal,head,pageListHead);
     end
   end;
 
@@ -486,16 +671,320 @@ begin
 
       internalPointer := getElementPointerByKey(head,buffKey);
       createHashList(internalPointer.internalList);
-      fillHashInternalLists(internalPointer.internalList,buffArr,1);
+      fillHashInternalLists(internalPointer.internalList,buffArr,1,pageListHead);
     end;
   end;
 end;
 
+procedure getOutputList(head: hashListElementPointer; outputHead: hashListElementPointer);
 var
-  hashListHead: hashListElementPointer;
+  hashListElement,outputListElement,additionalHashListElement,additionalOutputListElement: hashListElementPointer;
+begin
+  hashListElement := head;
+  outputListElement := outputHead;
+  while hashListElement <> nil do
+  begin
+    if (hashListElement.key <> '') and (hashListElement.value <> '') then
+    begin
+      if outputListElement.key <> '' then
+      begin
+        createHashListElement(outputListElement.nextElement);
+        outputListElement := outputListElement.nextElement;
+      end;
+      outputListElement.key := hashListElement.key;
+      outputListElement.value := hashListElement.value;
+      outputListElement.pages := hashListElement.pages;
+
+      if hashListElement.internalList <> nil then
+      begin
+        createHashListElement(outputListElement.internalList);
+        getoutputList(hashListElement.internalList,outputListElement.internalList);
+      end;
+
+
+      additionalHashListElement := hashListElement;
+      additionalOutputListElement := outputListElement;
+      if additionalHashListElement.additionalListElement <> nil then
+      begin
+        additionalHashListElement := additionalHashListElement.additionalListElement;
+        while additionalHashListElement <> nil do
+        begin
+          createHashListElement(additionalOutputListElement.nextElement);
+          additionalOutputListElement := additionalOutputListElement.nextElement;
+
+          additionalOutputListElement.key := additionalHashListElement.key;
+          additionalOutputListElement.value := additionalHashListElement.value;
+          additionalOutputListElement.pages := additionalHashListElement.pages;
+
+
+          if additionalHashListElement.internalList <> nil then
+          begin
+            getoutputList(additionalHashListElement.internalList,additionalOutputListElement.internalList);
+          end;
+          additionalHashListElement := additionalHashListElement.additionalListElement;
+        end;
+      end;
+
+    end;
+
+    hashListElement := hashListElement.nextElement;
+  end;
+
+end;
+
+procedure getOutputListString(outputAdditionalString: String; head: hashListElementPointer; var buffString: String);
+var
+  i: Integer;
+  element,additionalElement: hashListElementPointer;
+  newOutputAdditionalString: String;
+begin
+  element := head;
+  i := 0;
+  while element <> nil do
+  begin
+
+    buffString := buffString + outputAdditionalString;
+    if detailedOutput then
+    begin
+      buffString := buffString + IntToStr(i);
+    end;
+
+    outputHashListElement(element,buffString);
+    if element.internalList <> nil then
+    begin
+      newOutputAdditionalString := outputAdditionalString;
+      for i := 1 to Length(element.value)+Length(getPagesByName(element.pages,element.value)) do
+      begin
+        newOutputAdditionalString := newOutputAdditionalString + ' ';
+      end;
+      getOutputListString(newOutputAdditionalString,element.internalList,buffString);
+    end;
+
+    additionalElement := element;
+    if additionalElement.additionalListElement <> nil then
+    begin
+      additionalElement := additionalElement.additionalListElement;
+
+      while additionalElement <> nil do
+      begin
+        buffString := buffString + outputAdditionalString;
+        buffString := buffString + '  ';
+        outputHashListElement(additionalElement,buffString);
+
+        if additionalElement.internalList <> nil then
+        begin
+          newOutputAdditionalString := outputAdditionalString;
+          for i := 1 to Length(element.key)+Length(getPagesByName(element.pages,element.value)) do
+          begin
+            newOutputAdditionalString := newOutputAdditionalString + ' ';
+          end;
+          getOutputListString(newOutputAdditionalString,additionalElement.internalList,buffString);
+        end;
+
+        additionalElement := additionalElement.additionalListElement;
+      end;
+    end;
+    i := i + 1;
+    element := element.nextElement;
+  end;
+end;
+
+procedure sortOutputListByABC(var head: hashListElementPointer);
+var
+  i: Integer;
+  element,buffElement,additionalElement,buffHead: hashListElementPointer;
+  sorted: Boolean;
+begin
+  sorted := false;
+
+  buffHead := nil;
+  createHashListElement(buffHead);
+  buffHead.nextElement := head;
+  element := buffHead;
+
+  if head.nextElement <> nil then
+  begin
+    while not(sorted) do
+    begin
+      sorted := true;
+      element := buffHead;
+      while element.nextElement.nextElement<>nil do
+      begin
+        if element.nextElement.value > element.nextElement.nextElement.value then
+        begin
+          buffElement := element.nextElement;
+          element.nextElement := buffElement.nextElement;
+          buffElement.nextElement := buffElement.nextElement.nextElement;
+          element.nextElement.nextElement := buffElement;
+          sorted := false;
+        end;
+
+        element := element.nextElement;
+      end;
+    end;
+
+
+  end;
+
+
+  head := buffHead.nextElement;
+  dispose(buffHead);
+
+  element := head;
+  while element <> nil do
+  begin
+
+    if element.internalList <> nil then
+    begin
+      sortOutputListByABC(element.internalList);
+    end;
+
+    additionalElement := element;
+    if additionalElement.additionalListElement <> nil then
+    begin
+      additionalElement := additionalElement.additionalListElement;
+
+      while additionalElement <> nil do
+      begin
+
+        if additionalElement.internalList <> nil then
+        begin
+          sortOutputListByABC(additionalElement.internalList);
+        end;
+
+        additionalElement := additionalElement.additionalListElement;
+      end;
+    end;
+
+    element := element.nextElement;
+  end;
+
+end;
+
+
+function cmpPages(el1:hashListElementPointer;el2:hashListElementPointer):Boolean;
+var
+  buffStr,buffNum,s1,s2:String;
+  i,num1,num2:Integer;
+  arr: Array[1..2] of String;
+  num: Array[1..2] of Integer;
+  foundNum: Boolean;
+begin
+  cmpPages := false;
+  arr[1] := getPagesByName(el1.pages,el1.value);
+  arr[2] := getPagesByName(el2.pages,el2.value);
+  num[1] := 0;
+  num[2] := 0;
+
+  for i := 1 to 2 do
+  begin
+    buffStr := copy(arr[i],pos('(',arr[i]),pos(')',arr[i]));
+    if buffStr <> '()' then
+    begin
+      buffNum := '';
+      foundNum := false;
+      while (length(buffStr) > 0) and (not(foundNum)) do
+      begin
+        if (buffStr[1]>='0') and (buffStr[1]<='9') then
+        begin
+            buffNum := buffNum + buffStr[1];
+            delete(buffStr,1,1);
+        end else
+            begin
+              if buffNum <> '' then
+              begin
+                foundNum := true;
+              end;
+              delete(buffStr,1,1);
+            end;
+      end;
+
+      num[i] := StrToInt(buffNum);
+    end;
+  end;
+
+  cmpPages := num[1] > num[2];
+end;
+
+procedure sortOutputListByPAGES(var head: hashListElementPointer);
+var
+  i: Integer;
+  element,buffElement,additionalElement,buffHead: hashListElementPointer;
+  sorted: Boolean;
+begin
+  sorted := false;
+
+  buffHead := nil;
+  createHashListElement(buffHead);
+  buffHead.nextElement := head;
+  element := buffHead;
+
+  if head.nextElement <> nil then
+  begin
+    while not(sorted) do
+    begin
+      sorted := true;
+      element := buffHead;
+      while element.nextElement.nextElement<>nil do
+      begin
+        if cmpPages(element.nextElement,element.nextElement.nextElement) then
+        begin
+          buffElement := element.nextElement;
+          element.nextElement := buffElement.nextElement;
+          buffElement.nextElement := buffElement.nextElement.nextElement;
+          element.nextElement.nextElement := buffElement;
+          sorted := false;
+        end;
+
+        element := element.nextElement;
+      end;
+    end;
+
+
+  end;
+
+
+  head := buffHead.nextElement;
+  dispose(buffHead);
+
+  element := head;
+  while element <> nil do
+  begin
+
+    if element.internalList <> nil then
+    begin
+      sortOutputListByPAGES(element.internalList);
+    end;
+
+    additionalElement := element;
+    if additionalElement.additionalListElement <> nil then
+    begin
+      additionalElement := additionalElement.additionalListElement;
+
+      while additionalElement <> nil do
+      begin
+
+        if additionalElement.internalList <> nil then
+        begin
+          sortOutputListByPAGES(additionalElement.internalList);
+        end;
+
+        additionalElement := additionalElement.additionalListElement;
+      end;
+    end;
+
+    element := element.nextElement;
+  end;
+
+end;
+
+
+var
+  hashListHead,outputListHead: hashListElementPointer;
   pageListHead: pagesListElementPointer;
   arr: fileStringsArray;
   i: Integer;
+  outputStr: String;
 begin
   createFile(mainFileName);
   arr := getStringsFromFile(mainFileName);
@@ -510,12 +999,28 @@ begin
 
   hashListHead := nil;
   createHashList(hashListHead);
-  fillHashList(hashListHead, arr);
+  fillHashList(hashListHead, arr, pageListHead);
 
 //  updateValue('YORK','MINSK2',getElementPointerByKey(getElementPointerByKey(hashListHead,'EUROPE').internalList,'UK').internalList);
+//  updateValue('EUROPE','',hashListHead);
+  createHashListElement(outputListHead);
+  getOutputList(hashListHead,outputListHead);
 
   writeln;
   writeln;
-  outputHashList('',hashListHead);
+
+  sortOutputListByABC(outputListHead);
+  outputStr := '';
+  getOutputListString('',outputListHead,outputStr);
+  writeln(outputStr);
+
+  writeln;
+  writeln;
+
+  sortOutputListByPAGES(outputListHead);
+  outputStr := '';
+  getOutputListString('',outputListHead,outputStr);
+  writeln(outputStr);
+
   readln;
 end.
