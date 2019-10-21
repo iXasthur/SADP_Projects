@@ -73,7 +73,7 @@ end;
 
 function generateKeyV(initialStr: String): String;
 begin
-  insert(generateRandomString(15),initialStr,pos('%',initialStr)+1);
+  //insert(generateRandomString(15),initialStr,pos('%',initialStr)+1);
   generateKeyV := initialStr;
 end;
 
@@ -85,65 +85,76 @@ var
 begin
   Assign(F,name);
   rewrite(f);
-  str := generateKeyV('(EUROPE)%%(1)'); 
+  str := generateKeyV('(EUROPE)%(1)');
   write(f,str);
-  str := generateKeyV('_(FRANCE)%%(1)'); 
+  str := generateKeyV('_(FRANCE)%(1)');
   write(f,str);
-  str := generateKeyV('__(PARIS)%%(1)'); 
+  str := generateKeyV('__(PARIS)%(1)');
   write(f,str);
-  str := generateKeyV('__(LYON)%%(1)'); 
+  str := generateKeyV('__(LYON)%(1)');
   write(f,str);
-  str := generateKeyV('__(CAEN)%%(1)'); 
+  str := generateKeyV('__(CAEN)%(1)');
   write(f,str);
-  str := generateKeyV('_(GERMANY)%%(1)'); 
+  str := generateKeyV('_(GERMANY)%(1)');
   write(f,str);
-  str := generateKeyV('__(BERLIN)%%(1)'); 
+  str := generateKeyV('__(BERLIN)%(1)');
   write(f,str);
-  str := generateKeyV('__(FRANKFURT)%%(1)'); 
+  str := generateKeyV('__(FRANKFURT)%(1)');
   write(f,str);
-  str := generateKeyV('__(MUNICH)%%(1)'); 
+  str := generateKeyV('__(MUNICH)%(1)');
   write(f,str);
-  str := generateKeyV('_(UK)%%(1)'); 
+  str := generateKeyV('_(UK)%(1)');
   write(f,str);
-  str := generateKeyV('__(LONDON)%%(1)'); 
+  str := generateKeyV('__(LONDON)%(1)');
   write(f,str);
-  str := generateKeyV('__(YORK)%%(1)'); 
+  str := generateKeyV('__(YORK)%(1)');
   write(f,str);
-  str := generateKeyV('__(NORWICH)%%(1)'); 
+  str := generateKeyV('__(NORWICH)%(1)');
   write(f,str);
-  str := generateKeyV('__(BATH)%%(1)'); 
+  str := generateKeyV('__(BATH)%(1)');
   write(f,str);
-  str := generateKeyV('(NORTH AMERICA)%%(1)'); 
+  str := generateKeyV('(NORTH AMERICA)%(1)');
   write(f,str);
-  str := generateKeyV('_(USA)%%(1)'); 
+  str := generateKeyV('_(USA)%(1)');
   write(f,str);
-  str := generateKeyV('__(NEW-YORK)%%(1)'); 
+  str := generateKeyV('__(NEW-YORK)%(1)');
   write(f,str);
-  str := generateKeyV('__(SAN-FRANCISCO)%%(1)'); 
+  str := generateKeyV('__(SAN-FRANCISCO)%(1)');
   write(f,str);
-  str := generateKeyV('__(LOS-ANGELES)%%(1)'); 
+  str := generateKeyV('__(LOS-ANGELES)%(1)');
   write(f,str);
-  str := generateKeyV('__(CHICAGO)%%(1)'); 
+  str := generateKeyV('__(CHICAGO)%(1)');
   write(f,str);
-  str := generateKeyV('__(MINSK)%%(1)'); 
+  str := generateKeyV('__(MINSK)%(1)');
   write(f,str);
-  str := generateKeyV('__(PITTSBURG)%%(1)'); 
+  str := generateKeyV('__(PITTSBURG)%(1)');
   write(f,str);
-  str := generateKeyV('_(CANADA)%%(1)'); 
+  str := generateKeyV('_(CANADA)%(1)');
   write(f,str);
-  str := generateKeyV('__(TORONTO)%%(1)'); 
+  str := generateKeyV('__(TORONTO)%(1)');
   write(f,str);
-  str := generateKeyV('__(OTTAWA)%%(1)'); 
+  str := generateKeyV('__(OTTAWA)%(1)');
   write(f,str);
-  str := generateKeyV('__(MONTREAL)%%(1)'); 
+  str := generateKeyV('__(MONTREAL)%(1)');
   write(f,str);
-  str := generateKeyV('_(MEXICO)%%(1)'); 
+  str := generateKeyV('_(MEXICO)%(1)');
   write(f,str);
-  str := generateKeyV('__(MEXICO CITY)%%(1)'); 
+  str := generateKeyV('__(MEXICO CITY)%(1)');
   write(f,str);
-  str := generateKeyV('__(CANCUN)%%(1)'); 
+  str := generateKeyV('__(CANCUN)%(1)');
   write(f,str);
   close(f);
+end;
+
+procedure extractPages(var arr: fileStringsArray; var head: pagesListElementPointer);
+var
+  i,p: Integer;
+begin
+  for i := 0 to Length(arr) do
+  begin
+    p := pos('%',arr[i]);
+    Delete(arr[i],p,pos(')',arr[i],p)-p+1);
+  end;
 end;
 
 procedure outputFile(name: String);
@@ -229,19 +240,50 @@ begin
     element := element.nextElement;
   end;
 
-  if element.key <> '' then
+//  if element.key <> '' then
+//  begin
+//    while (element.additionalListElement <> nil) and (element.key <> forKey) do
+//    begin
+//      element := element.additionalListElement
+//    end;
+//
+//    if (element.key <> forKey) then
+//    begin
+//      createHashListElement(element.additionalListElement);
+//      element := element.additionalListElement;
+//    end;
+//  end;
+  writeln('Updating value for key ''',forKey,''' from ''',element.value,''' to ''',strValue,'''');
+  if element.key = forKey then
   begin
-    while element.additionalListElement <> nil do
-    begin
-      element := element.additionalListElement
-    end;
+    element.value := strValue;
+  end else
+      begin
+        if element.key = '' then
+        begin
+          element.key := forKey;
+          element.value := strValue;
+        end else
+            begin
+              while (element.additionalListElement <> nil) and (element.key <> forKey) do
+              begin
+                element := element.additionalListElement
+              end;
 
-    createHashListElement(element.additionalListElement);
-    element := element.additionalListElement
-  end;
+              if (element.key = forKey) then
+              begin
+                element.value := strValue;
+              end else
+                  begin
+                    createHashListElement(element.additionalListElement);
+                    element := element.additionalListElement;
 
-  element.key := forKey;
-  element.value := strValue;
+                    element.key := forKey;
+                    element.value := strValue;
+                  end;
+            end;
+      end;
+
 end;
 
 procedure outputHashListElement(element: hashListElementPointer);
@@ -285,7 +327,7 @@ begin
       write(outputAdditionalString);
       if detailedOutput then
       begin
-        write(i:2);
+        write(i:3);
       end;
       outputHashListElement(element);
       if element.internalList <> nil then
@@ -332,7 +374,7 @@ begin
     while head<>nil do
     begin
       head := head.additionalListElement;
-      if head.key = key then
+      if (head<>nil) and (head.key = key) then
       begin
         getElementPointerByKey := head;
         head := nil;
@@ -366,7 +408,7 @@ begin
       p2 := pos(')',arr[i]);
       buffVal := '';
       buffVal := copy(arr[i],p1,p2-p1);
-      updateValue(arr[i],buffVal,head);
+      updateValue(buffVal,buffVal,head);
     end;
   end;
 
@@ -389,6 +431,10 @@ begin
     begin
 //      writeln(buffKey);
 //      writeln(count);
+      p1 := pos('(',buffKey) + 1;
+      p2 := pos(')',buffKey);
+      buffKey := copy(buffKey,p1,p2-p1);
+
       internalPointer := getElementPointerByKey(head,buffKey);
       createHashList(internalPointer.internalList);
       fillHashInternalLists(internalPointer.internalList,buffArr,k+1);
@@ -411,7 +457,7 @@ begin
       p2 := pos(')',arr[i]);
       buffVal := '';
       buffVal := copy(arr[i],p1,p2-p1);
-      updateValue(arr[i],buffVal,head);
+      updateValue(buffVal,buffVal,head);
     end
   end;
 
@@ -434,6 +480,10 @@ begin
     begin
 //      writeln(buffKey);
 //      writeln(count);
+      p1 := pos('(',buffKey) + 1;
+      p2 := pos(')',buffKey);
+      buffKey := copy(buffKey,p1,p2-p1);
+
       internalPointer := getElementPointerByKey(head,buffKey);
       createHashList(internalPointer.internalList);
       fillHashInternalLists(internalPointer.internalList,buffArr,1);
@@ -443,11 +493,13 @@ end;
 
 var
   hashListHead: hashListElementPointer;
+  pageListHead: pagesListElementPointer;
   arr: fileStringsArray;
   i: Integer;
 begin
   createFile(mainFileName);
   arr := getStringsFromFile(mainFileName);
+  extractPages(arr,pageListHead);
   for i := 0 to Length(arr)-1 do
   begin
     write(arr[i]);
@@ -459,6 +511,11 @@ begin
   hashListHead := nil;
   createHashList(hashListHead);
   fillHashList(hashListHead, arr);
+
+//  updateValue('YORK','MINSK2',getElementPointerByKey(getElementPointerByKey(hashListHead,'EUROPE').internalList,'UK').internalList);
+
+  writeln;
+  writeln;
   outputHashList('',hashListHead);
   readln;
 end.
