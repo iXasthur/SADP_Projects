@@ -1479,11 +1479,22 @@ end;
 procedure TForm1.SpeedButton6Click(Sender: TObject);
 var
   outputStr: String;
+  buffStr: String;
+  buffPointer: hashListElementPointer;
 begin
   //EDIT
   if Label1.Caption <> 'ROOT' then
   begin
-    updateValue(currentElementPointer.key,INPUT_TF.Text,currentHeadPointer,pageListHead);
+//    updateValue(currentElementPointer.key,INPUT_TF.Text,currentHeadPointer,pageListHead);
+    updateValue(currentElementPointer.key,'',currentHeadPointer,pageListHead);
+    buffPointer := currentElementPointer.internalList;
+    buffStr := INPUT_TF.Text;
+    extractPagesFromStr(buffStr);
+    INPUT_TF.Text := buffStr;
+    updateValue(INPUT_TF.Text,INPUT_TF.Text,currentHeadPointer,pageListHead);
+    currentElementPointer :=  getElementPointerByKey(currentHeadPointer,INPUT_TF.Text);
+    currentElementPointer.internalList := buffPointer;
+    Label1.Caption := Label1.Caption + '->' + currentElementPointer.key;
 
     createHashListElement(outputListHead);
     getOutputList(hashListHead,outputListHead);

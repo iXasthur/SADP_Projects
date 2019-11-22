@@ -149,7 +149,6 @@ object Form1: TForm1
         Value = 10.780879127650940000
       end>
     TabOrder = 0
-    ExplicitWidth = 850
     object Memo1: TMemo
       Left = 253
       Top = 17
@@ -255,7 +254,6 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      ExplicitTop = 381
       ExplicitHeight = 21
     end
     object SpeedButton5: TSpeedButton
@@ -308,10 +306,6 @@ object Form1: TForm1
       Lines.Strings = (
         'INPUT_TF')
       TabOrder = 1
-      ExplicitLeft = 296
-      ExplicitTop = 232
-      ExplicitWidth = 185
-      ExplicitHeight = 89
     end
     object SpeedButton7: TSpeedButton
       AlignWithMargins = True
