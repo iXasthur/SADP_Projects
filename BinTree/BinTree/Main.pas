@@ -10,6 +10,7 @@ const
   CENTRAL_INDEX = 500;
   MAX_NODES = 50;
   ITEM_EDGE = 50;
+  STEP_TIME = 100;
 
 type
   TTreePtr = ^TTreeNode;
@@ -137,10 +138,13 @@ begin
 
   Result:=Result + '('+IntToStr(TreeHead^.Body) + ')' + ' ';
 
-  W:= Pic.Caption;
-  Pic.Caption:= '!!!';
-  Delay(1000);
-  Pic.Caption:= W;
+  Pic.ClientHeight := Round(Pic.ClientHeight * 1.25);
+  Pic.ClientWidth := Round(Pic.ClientWidth * 1.25);
+  Pic.Font.Size := Round(Pic.Font.Size * 1.25);
+  Delay(STEP_TIME);
+  Pic.ClientHeight := Round(Pic.ClientHeight / 1.25);
+  Pic.ClientWidth := Round(Pic.ClientWidth / 1.25);
+  Pic.Font.Size := Round(Pic.Font.Size / 1.25);
 
   Result:= Result + DirectSearch(TreeHead^.Left);
   Result:= Result + IntToStr(TreeHead^.Body)+ ' ';
@@ -169,10 +173,13 @@ begin
   Result:= Result + ReversiveSearch(TreeHead^.Right);
   Result:= Result + '('+IntToStr(TreeHead^.Body) + ')' + ' ';
 
-  W:= Pic.Caption;
-  Pic.Caption:= '!!!';
-  Delay(1000);
-  Pic.Caption:= W;
+  Pic.ClientHeight := Round(Pic.ClientHeight * 1.25);
+  Pic.ClientWidth := Round(Pic.ClientWidth * 1.25);
+  Pic.Font.Size := Round(Pic.Font.Size * 1.25);
+  Delay(STEP_TIME);
+  Pic.ClientHeight := Round(Pic.ClientHeight / 1.25);
+  Pic.ClientWidth := Round(Pic.ClientWidth / 1.25);
+  Pic.Font.Size := Round(Pic.Font.Size / 1.25);
 end;
 
 
@@ -189,10 +196,14 @@ var
     Inc(RealNeedNodes);
 
     Pic:= GetButton(SubPtr^.Body.ToString);
-    W:= Pic.Caption;
-    Pic.Caption:= '!!!';
-    Delay(100);
-    Pic.Caption:= W;
+
+    Pic.ClientHeight := Round(Pic.ClientHeight * 1.25);
+    Pic.ClientWidth := Round(Pic.ClientWidth * 1.25);
+    Pic.Font.Size := Round(Pic.Font.Size * 1.25);
+    Delay(STEP_TIME);
+    Pic.ClientHeight := Round(Pic.ClientHeight / 1.25);
+    Pic.ClientWidth := Round(Pic.ClientWidth / 1.25);
+    Pic.Font.Size := Round(Pic.Font.Size / 1.25);
 
     if GlobalPtr <> nil then begin
       if GlobalPtr^.Right = nil then
@@ -303,27 +314,6 @@ begin
   end;
 end;
 
-procedure TMainForm.ThreadIt(TreeHead: TTreePtr);
-var
-  Pic: TButton;
-  I: Integer;
-  LastX, LastY: Integer;
-begin
-  LastX:= NeedNodes[1].Left;
-  LastY:= NeedNodes[1].Top;
-  for I:= 2 to RealNeedNodes - 1 do begin
-    Pic:= NeedNodes[I];
-
-      DrawPic.Canvas.Pen.Color:= clRed;
-      DrawPic.Canvas.Pen.Width:= 3;
-      DrawPic.Canvas.MoveTo(LastX, LastY);
-      DrawPic.Canvas.LineTo(Pic.Left, Pic.Top);
-
-    LastX:= Pic.Left;
-    LastY:= Pic.Top;
-  end;
-end;
-
 
 function FindItem(FindBody: Integer; Tree: TTreePtr): TTreePtr;
 begin
@@ -348,6 +338,34 @@ begin
   for I:= 1 to RealNodes - 1 do begin
     Nodes[I].Visible:= not Nodes[I].Visible;
     Nodes[I].Free;
+  end;
+end;
+
+procedure TMainForm.ThreadIt(TreeHead: TTreePtr);
+var
+  Pic: TButton;
+  I: Integer;
+  LastX, LastY: Integer;
+begin
+  LastX:= NeedNodes[1].Left;
+  LastY:= NeedNodes[1].Top;
+  for I:= 2 to RealNeedNodes - 1 do begin
+    Pic:= NeedNodes[I];
+
+    if FindItem(StrToInt(NeedNodes[I-1].Caption),TreeHead).Right = nil then
+    begin
+      DrawPic.Canvas.Pen.Color:= clRed;
+      DrawPic.Canvas.Pen.Width:= 3;
+      DrawPic.Canvas.MoveTo(LastX, LastY);
+      DrawPic.Canvas.LineTo(Pic.Left, LastY);
+      DrawPic.Canvas.LineTo(Pic.Left, Pic.Top + Pic.ClientHeight div 2 + 10);
+      DrawPic.Canvas.LineTo(Pic.Left - 10, Pic.Top + 25 + Pic.ClientHeight div 2 + 10);
+      DrawPic.Canvas.LineTo(Pic.Left + 10, Pic.Top + 25 + Pic.ClientHeight div 2 + 10);
+      DrawPic.Canvas.LineTo(Pic.Left, Pic.Top + Pic.ClientHeight div 2 + 10);
+    end;
+
+    LastX:= Pic.Left;
+    LastY:= Pic.Top;
   end;
 end;
 
@@ -405,8 +423,8 @@ begin
   Delete(TreeHead, ItemInt);
   PrintTree(TreeHead, 1);
   DirectDraw(TreeHead);
-  SymSearch(TreeHead);
-  ThreadIt(TreeHead);
+  //SymSearch(TreeHead);
+  //ThreadIt(TreeHead);
 end;
 
 procedure TMainForm.RevercedSearchButtonClick(Sender: TObject);

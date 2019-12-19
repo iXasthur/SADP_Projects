@@ -46,7 +46,6 @@ type
     ShortestWayText: TStaticText;
     LongestWayText: TStaticText;
     GraphCenterText: TStaticText;
-    AllRoutesText: TStaticText;
     procedure FillGraphTable();
     procedure CountButtonClick(Sender: TObject);
     procedure GenerateGraphButtonClick(Sender: TObject);

@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'GraphMetrix'
-  ClientHeight = 527
-  ClientWidth = 417
+  ClientHeight = 297
+  ClientWidth = 830
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -57,64 +57,56 @@ object MainForm: TMainForm
   object CountButton: TButton
     Left = 8
     Top = 230
-    Width = 193
+    Width = 394
     Height = 25
     Caption = #1042#1099#1095#1080#1089#1083#1080#1090#1100
     TabOrder = 5
     OnClick = CountButtonClick
   end
   object GenerateGraphButton: TButton
-    Left = 207
-    Top = 230
-    Width = 195
+    Left = 8
+    Top = 261
+    Width = 394
     Height = 25
     Caption = #1043#1077#1085#1077#1088#1080#1088#1086#1074#1072#1090#1100' '#1075#1088#1072#1092
     TabOrder = 6
     OnClick = GenerateGraphButtonClick
   end
   object RoutesTable: TValueListEditor
-    Left = 8
-    Top = 353
-    Width = 394
-    Height = 166
+    Left = 415
+    Top = 8
+    Width = 407
+    Height = 177
     TabOrder = 7
     TitleCaptions.Strings = (
       #1044#1083#1080#1085#1072
       #1055#1091#1090#1100)
     ColWidths = (
       40
-      348)
+      361)
   end
   object ShortestWayText: TStaticText
-    Left = 8
-    Top = 261
+    Left = 424
+    Top = 203
     Width = 98
     Height = 17
     Caption = #1050#1088#1072#1090#1095#1072#1081#1096#1080#1081' '#1087#1091#1090#1100':'
     TabOrder = 8
   end
   object LongestWayText: TStaticText
-    Left = 8
-    Top = 284
+    Left = 424
+    Top = 226
     Width = 99
     Height = 17
     Caption = #1044#1083#1080#1085#1085#1077#1081#1096#1080#1081' '#1087#1091#1090#1100':'
     TabOrder = 9
   end
   object GraphCenterText: TStaticText
-    Left = 8
-    Top = 307
+    Left = 424
+    Top = 249
     Width = 74
     Height = 17
     Caption = #1062#1077#1085#1090#1088' '#1075#1088#1072#1092#1072':'
     TabOrder = 10
-  end
-  object AllRoutesText: TStaticText
-    Left = 8
-    Top = 330
-    Width = 58
-    Height = 17
-    Caption = #1042#1089#1077' '#1087#1091#1090#1080#55358#56391
-    TabOrder = 11
   end
 end
